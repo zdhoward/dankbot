@@ -1,6 +1,7 @@
 import discord
 import random
 import datetime
+import requests
 from datetime import timedelta
 from tinydb import TinyDB, Query
 
@@ -80,7 +81,9 @@ def evetime():
 client = discord.Client()
 db = TinyDB('db.json')
 
-all_roles = {"EVE", "PUBG"}
+# bot id in secret.py    > bot_id = ""
+# all_roles in secret.py > all_roles = {"EVE", "PUBG"}
+# should help to seperate functions into files
 
 @client.event
 async def on_ready():
@@ -88,6 +91,24 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print('------')
+
+@client.event
+async def on_member_join(member):
+    ## ACTION
+    server = member.server
+    msg = 'Welcome to the public DOBIS server! {0.mention}'.format(member)
+    msg += '\n```'
+    msg += '\nPlease start by authorizing your account'
+    msg += '\nType !auth to begin'
+    msg += '\n```'
+    channel = discord.utils.get(client.get_all_channels(), server__name=server.name, name='help')
+
+    ## LOG
+    print ('[{0}] {1} -> joined server'.format(datetime.datetime.now().strftime('%Y-%m-%d %H:%M'), member))
+
+    ## EXECUTION
+    await client.send_message(channel, msg)
+    return
 
 @client.event
 async def on_message(message):
@@ -236,31 +257,132 @@ async def on_message(message):
     # AUTH
     ####################
     if message.content.startswith('!auth'):
+        command = message.content.replace('!auth ', '')
+        q = Query()
+        response = db.search(q.discord_id == message.author.id)
+        msg = ''
         ####################
         # AUTH RESET
         ####################
         if command == 'reset':
-            msg += 'Removing You'
-            authStep = 0
+            msg += '```Unauthorizing {0}```'.format(message.author.nick)
+            db.remove(q.discord_id == message.author.id)
+            # must execute and exit early
+            await client.send_message(message.channel, msg)
             return
+
+        ####################
+        # GET AUTH STEP
+        ####################
         # Test for auth_step
-#
-# need to find python equiv
-#
-#        switch(authStep){
-#            case 1:
-#                msg += '\nStep 1:'
-#                break;
-#            case 2:
-#                msg += '\nStep 2:'
-#                break;
-#            case 3:
-#                msg += '\Step 3:'
-#                break;
-#            default:
-#                msg += '\nBEGIN AUTH'
-#                break;
-#        }
+        if len(response) == 1:
+            for r in response:
+                log(message.author, "Auth Step: ", r['auth_step'])
+                authStep = r['auth_step']
+        else:
+            authStep = 0
+
+        ####################
+        # STEP 3 - VCODE
+        ####################
+        #if authStep == 3: #& command.startswith('vcode'):
+        if command.startswith('vcode'):
+            if authStep == 2:
+                apiVCODE = command.replace('vcode ', '')
+                if len(apiVCODE) == 64:
+                    #add api_vcode to db
+                    db.update({'api_vcode': apiVCODE}, q.discord_id == message.author.id)
+                    #check info
+                    #if wrong, revert back to authstep 2
+                    db.update({'auth_step': 3}, q.discord_id == message.author.id)
+                    # Step 3 Check
+                    msg += '```Verififying```'
+                    ####################
+# TODO              # STEP 3 - VERIFY access mask
+                    ####################
+                    msg += '```Authorized!```'
+                else:
+                    msg += '```Step 3: FAILED```'
+                    msg += '```Your vcode is not correct, please try again:'
+                    msg += '\n!auth vcode [vcode]```'
+                await client.send_message(message.channel, msg)
+                return
+        ####################
+        # STEP 2 - ID
+        ####################
+        #elif authStep == 2: #& command.startswith('id'):
+        if command.startswith('id'):
+            if authStep == 1:
+                apiID = command.replace('id ', '')
+                # add api_id to db
+                if len(apiID) == 7:
+                    db.update({'api_id': apiID}, q.discord_id == message.author.id)
+                    db.update({'auth_step': 2}, q.discord_id == message.author.id)
+                    msg += '```Step 3```'
+                    msg += '```Please enter your api id with:'
+                    msg += '\n!auth vcode [vcode]```'
+                else:
+                    msg += '```Step 2: FAILED```'
+                    msg += '```Your id is not correct, please try again:'
+                    msg += '\n!auth id [id]```'
+
+                await client.send_message(message.channel, msg)
+                return
+        ####################
+        # STEP 1 - NAME
+        ####################
+        #elif authStep == 1: #& command.startswith('name'):
+        if command.startswith('name'):
+            name = command.replace('name ', '')
+            if name != 'name':
+                #add member to db
+                db.insert({'discord_id': message.author.id, 'name': name, 'api_id': '', 'api_vcode': '', 'auth_step': 1})
+                # Step 1 Check
+                msg += '```Step 2```'
+                msg += '```Please enter your in-game name with:'
+                msg += '\n!auth id [id]```'
+            else:
+                msg += '```Step 1: FAILED```'
+                msg += '```Your name has not been included, please try again:'
+                msg += '\n!auth name [name]```'
+
+            await client.send_message(message.channel, msg)
+            return
+        ####################
+        # START AUTH
+        ####################
+        if command.startswith('!auth'):
+            if authStep == 3:
+                msg += '```Already Authorized!```'
+                msg += '```If you need to reset this process:'
+                msg += '\n!auth reset```'
+            elif authStep == 2:
+                msg += '```Your next step:```'
+                msg += '```Please enter your api vcode with:'
+                msg += '\n!auth vcode [vcode]```'
+            elif authStep == 1:
+                msg += '```Your next step:```'
+                msg += '```Please enter your in-game id with:'
+                msg += '\n!auth id [id]```'
+            else:
+                msg += '```Step 1```'
+                msg += '```Please enter your in-game name with:'
+                msg += '\n!auth name [name]```'
+            await client.send_message(message.channel, msg)
+            return
+
+        ## LOG
+        log(message.author, message.content, msg)
+
+        ## EXECUTE
+        #await client.send_message(message.channel, msg)
+        return
+    if message.content.startswith('!test'):
+        apiID = '6682426'
+        apiVCODE = '6rJ2q6hiQ6duUjGEdtRTDBXdqB0SrSVsySalAm0egkxtW7d8ZVXUG2XtkzN1F3Fq'
+        accessMask = '4294967295'
+        ## ACTION
+        msg = 'Hello {0.author.mention}'.format(message)
 
         ## LOG
         log(message.author, message.content, msg)
