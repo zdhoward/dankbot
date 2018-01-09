@@ -31,7 +31,7 @@ def ts():
 # Log
 #   Example:
 #       log()
-#           return 2017-12-31 18:24:32
+#           return
 ####################
 def log(member, command, result):
     ## ACTION
@@ -157,13 +157,46 @@ async def on_message(message):
     # ROLL
     ####################
     if message.content.startswith('!roll'):
+        question = message.content.replace('!roll ', '').lower()
+        #reply = question.replace('?', '')
+        #reply = reply.replace('will i', 'i will')
+        #reply = reply.replace(' I ', ' you ')
+        #reply = reply.replace(' i ', ' you ')
+        options = {0:'Yes',1: 'No',2: 'Outcome looks good',3: 'Maybe',4: 'Fuck no',5: ':)',6: ':('}
         ## ACTION
-        die = int(message.content.replace('!roll ', ''))
-        roll = random.randint(1,die)
-        if roll == die:
-            msg = '!!! CRITICAL: {0} {1.author.mention} !!!'.format(roll, message)
+        die = len(options)
+
+        random.seed(ts())
+        seed = '{0}-{1}'.format(question, random.randint(1, 1000000000))
+        random.seed(seed)
+        
+        roll = (random.randint(1,die) - 1)
+
+        msg = '```'
+        msg += '\n{0}'.format(options[roll])
+        #msg += '\n{0}'.format(reply)
+        msg +='```'
+
+        ## LOG
+        log(message.author, message.content, msg)
+
+        ## EXECUTE
+        await client.send_message(message.channel, msg)
+        return
+    ####################
+    # DICE
+    ####################
+    if message.content.startswith('!d'):
+        ## ACTION
+        die = int(message.content.replace('!d', ''))
+        if die > 0:
+            roll = random.randint(1,die)
+            if roll == die:
+                msg = '!!! CRITICAL: {0} {1.author.mention} !!!'.format(roll, message)
+            else:
+                msg = '```{0} rolled: {1}```'.format(message.author.nick, roll)
         else:
-            msg = '```{0} rolled: {1}```'.format(message.author.nick, roll)
+            msg = "```FAILED: Please enter a number greater than zero```"
 
         ## LOG
         log(message.author, message.content, msg)
@@ -191,6 +224,7 @@ async def on_message(message):
     if message.content.startswith('!help'):
         ## ACTION
         msg = "```COMMAND   : DESCRIPTION"
+        msg += "\n!auth     : get authed up"
         msg += "\n!roles    : add/removes"
         msg += "\n!help     : see commands"
         msg += "\n!hello    : hello dankbot"
@@ -277,7 +311,7 @@ async def on_message(message):
         # Test for auth_step
         if len(response) == 1:
             for r in response:
-                log(message.author, "Auth Step: ", r['auth_step'])
+                #log(message.author, "Auth Step: ", r['auth_step'])
                 authStep = r['auth_step']
         else:
             authStep = 0
