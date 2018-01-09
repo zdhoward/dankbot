@@ -1,6 +1,7 @@
 import discord
 import random
 import datetime
+import requests
 from datetime import timedelta
 from tinydb import TinyDB, Query
 
@@ -286,14 +287,22 @@ async def on_message(message):
         if command.startswith('vcode'):
             if authStep == 2:
                 apiVCODE = command.replace('vcode ', '')
-                #add api_vcode to db
-                db.update({'api_vcode': apiVCODE}, q.discord_id == message.author.id)
-                #check info
-                #if wrong, revert back to authstep 2
-                db.update({'auth_step': 3}, q.discord_id == message.author.id)
-                # Step 3 Check
-                msg += '```Verififying```'
-                msg += '```Authorized!```'
+                if len(apiVCODE) == 64:
+                    #add api_vcode to db
+                    db.update({'api_vcode': apiVCODE}, q.discord_id == message.author.id)
+                    #check info
+                    #if wrong, revert back to authstep 2
+                    db.update({'auth_step': 3}, q.discord_id == message.author.id)
+                    # Step 3 Check
+                    msg += '```Verififying```'
+                    ####################
+# TODO              # STEP 3 - VERIFY access mask
+                    ####################
+                    msg += '```Authorized!```'
+                else:
+                    msg += '```Step 3: FAILED```'
+                    msg += '```Your vcode is not correct, please try again:'
+                    msg += '\n!auth vcode [vcode]```'
                 await client.send_message(message.channel, msg)
                 return
         ####################
@@ -304,12 +313,17 @@ async def on_message(message):
             if authStep == 1:
                 apiID = command.replace('id ', '')
                 # add api_id to db
-                db.update({'api_id': apiID}, q.discord_id == message.author.id)
-                db.update({'auth_step': 2}, q.discord_id == message.author.id)
-                # Step 2 Check
-                msg += '```Step 3```'
-                msg += '```Please enter your api id with:'
-                msg += '\n!auth vcode [vcode]```'
+                if len(apiID) == 7:
+                    db.update({'api_id': apiID}, q.discord_id == message.author.id)
+                    db.update({'auth_step': 2}, q.discord_id == message.author.id)
+                    msg += '```Step 3```'
+                    msg += '```Please enter your api id with:'
+                    msg += '\n!auth vcode [vcode]```'
+                else:
+                    msg += '```Step 2: FAILED```'
+                    msg += '```Your id is not correct, please try again:'
+                    msg += '\n!auth id [id]```'
+
                 await client.send_message(message.channel, msg)
                 return
         ####################
@@ -318,12 +332,18 @@ async def on_message(message):
         #elif authStep == 1: #& command.startswith('name'):
         if command.startswith('name'):
             name = command.replace('name ', '')
-            #add member to db
-            db.insert({'discord_id': message.author.id, 'name': name, 'api_id': '', 'api_vcode': '', 'auth_step': 1})
-            # Step 1 Check
-            msg += '```Step 2```'
-            msg += '```Please enter your in-game name with:'
-            msg += '\n!auth id [id]```'
+            if name != 'name':
+                #add member to db
+                db.insert({'discord_id': message.author.id, 'name': name, 'api_id': '', 'api_vcode': '', 'auth_step': 1})
+                # Step 1 Check
+                msg += '```Step 2```'
+                msg += '```Please enter your in-game name with:'
+                msg += '\n!auth id [id]```'
+            else:
+                msg += '```Step 1: FAILED```'
+                msg += '```Your name has not been included, please try again:'
+                msg += '\n!auth name [name]```'
+
             await client.send_message(message.channel, msg)
             return
         ####################
@@ -348,24 +368,6 @@ async def on_message(message):
                 msg += '\n!auth name [name]```'
             await client.send_message(message.channel, msg)
             return
-
-#
-# need to find python equiv
-#
-#        switch(authStep){
-#            case 1:
-#                msg += '\nStep 1:'
-#                break;
-#            case 2:
-#                msg += '\nStep 2:'
-#                break;
-#            case 3:
-#                msg += '\Step 3:'
-#                break;
-#            default:
-#                msg += '\nBEGIN AUTH'
-#                break;
-#        }
 
         ## LOG
         log(message.author, message.content, msg)
