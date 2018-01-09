@@ -1,0 +1,7 @@
+# file
+db.json
+secret.py
+__pycache__/
+old/
+
+# file types
