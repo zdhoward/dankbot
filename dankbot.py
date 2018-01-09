@@ -81,7 +81,9 @@ def evetime():
 client = discord.Client()
 db = TinyDB('db.json')
 
-all_roles = {"EVE", "PUBG"}
+# bot id in secret.py    > bot_id = ""
+# all_roles in secret.py > all_roles = {"EVE", "PUBG"}
+# should help to seperate functions into files
 
 @client.event
 async def on_ready():
@@ -356,11 +358,11 @@ async def on_message(message):
                 msg += '\n!auth reset```'
             elif authStep == 2:
                 msg += '```Your next step:```'
-                msg += '```Please enter your api id with:'
+                msg += '```Please enter your api vcode with:'
                 msg += '\n!auth vcode [vcode]```'
             elif authStep == 1:
                 msg += '```Your next step:```'
-                msg += '```Please enter your in-game name with:'
+                msg += '```Please enter your in-game id with:'
                 msg += '\n!auth id [id]```'
             else:
                 msg += '```Step 1```'
@@ -374,6 +376,19 @@ async def on_message(message):
 
         ## EXECUTE
         #await client.send_message(message.channel, msg)
+        return
+    if message.content.startswith('!test'):
+        apiID = '6682426'
+        apiVCODE = '6rJ2q6hiQ6duUjGEdtRTDBXdqB0SrSVsySalAm0egkxtW7d8ZVXUG2XtkzN1F3Fq'
+        accessMask = '4294967295'
+        ## ACTION
+        msg = 'Hello {0.author.mention}'.format(message)
+
+        ## LOG
+        log(message.author, message.content, msg)
+
+        ## EXECUTE
+        await client.send_message(message.channel, msg)
         return
     ####################
     # BLOCKEND
