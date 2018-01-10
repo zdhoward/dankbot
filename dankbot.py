@@ -55,12 +55,12 @@ def log(member, command, result):
 def checkRole(message, role):
     ## ACTION
     result = False
-    if isAuthed(message.author) == 4:
-        for each in message.author.roles:
-            if each.name == role:
-                result = True
-        ## LOG
-        #log(message.author, message.content, result)
+    #if isAuthed(message.author) == 4:
+    for each in message.author.roles:
+        if each.name == role:
+            result = True
+    ## LOG
+    #log(message.author, message.content, result)
     return result
 
 ####################
@@ -83,16 +83,16 @@ def evetime():
 #       isAuthed(member)
 #           return 4 (full authed)
 ####################
-def isAuthed(member):
-    q = Query()
-    response = db.search(q.discord_id == member.id)
-    # Test for auth_step
-    if len(response) == 1:
-        for r in response:
-            authStep = r['auth_step']
-    else:
-        authStep = 0
-    return authStep
+#def isAuthed(member):
+#    q = Query()
+#    response = db.search(q.discord_id == member.id)
+#    # Test for auth_step
+#    if len(response) == 1:
+#        for r in response:
+#            authStep = r['auth_step']
+#    else:
+#        authStep = 0
+#    return authStep
 
 
 ########################################
@@ -357,7 +357,15 @@ async def on_message(message):
             ####################
             # GET AUTH STEP
             ####################
-            authStep =isAuthed(message.author)
+            #authStep =isAuthed(message.author)
+            q = Query()
+            response = db.search(q.discord_id == member.id)
+            # Test for auth_step
+            if len(response) == 1:
+                for r in response:
+                    authStep = r['auth_step']
+            else:
+                authStep = 0
 
             ####################
             # STEP 3 - VCODE
