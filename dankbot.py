@@ -335,6 +335,7 @@ async def on_message(message):
     # TODO              # STEP 3 - VERIFY access mask
                         ####################
                         msg += '```Authorized!```'
+                        msg += '```Now type !roles eve to add yourself to the eve group```'
                     else:
                         msg += '```Step 3: FAILED```'
                         msg += '```Your vcode is not correct, please try again:'
