@@ -1,7 +1,9 @@
 import discord
+from discord import Message
 import random
 import datetime
 import requests
+import asyncio
 from datetime import timedelta
 from tinydb import TinyDB, Query
 
@@ -169,7 +171,7 @@ async def on_message(message):
         random.seed(ts())
         seed = '{0}-{1}'.format(question, random.randint(1, 1000000000))
         random.seed(seed)
-        
+
         roll = (random.randint(1,die) - 1)
 
         msg = '```'
@@ -352,6 +354,9 @@ async def on_message(message):
                 if len(apiID) == 7:
                     db.update({'api_id': apiID}, q.discord_id == message.author.id)
                     db.update({'auth_step': 2}, q.discord_id == message.author.id)
+                    # delete the public msg
+                    client.delete_message(message)
+                    # prompt for next step
                     msg += '```Step 3```'
                     msg += '```Please enter your api id with:'
                     msg += '\n!auth vcode [vcode]```'
@@ -371,7 +376,9 @@ async def on_message(message):
             if name != 'name':
                 #add member to db
                 db.insert({'discord_id': message.author.id, 'name': name, 'api_id': '', 'api_vcode': '', 'auth_step': 1})
-                # Step 1 Check
+                # delete the public msg
+                client.delete_message(message)
+                # prompt for next step
                 msg += '```Step 2```'
                 msg += '```Please enter your in-game name with:'
                 msg += '\n!auth id [id]```'
@@ -411,23 +418,24 @@ async def on_message(message):
         ## EXECUTE
         #await client.send_message(message.channel, msg)
         return
-    if message.content.startswith('!test'):
-        apiID = '6682426'
-        apiVCODE = '6rJ2q6hiQ6duUjGEdtRTDBXdqB0SrSVsySalAm0egkxtW7d8ZVXUG2XtkzN1F3Fq'
-        accessMask = '4294967295'
+    ####################
+    # TEST COSE HERE
+    ####################
+#    if message.content.startswith('!test'):
+        ## TEST DATA ###################
+        #apiID = '6682426'
+        #apiVCODE = '6rJ2q6hiQ6duUjGEdtRTDBXdqB0SrSVsySalAm0egkxtW7d8ZVXUG2XtkzN1F3Fq'
+        #accessMask = '4294967295'
         ## ACTION
-        msg = 'Hello {0.author.mention}'.format(message)
+        #msg = 'Hello {0.author.mention}'.format(message)
+        # delete the public msg
+        #msg = await client.send_message(message.author, '10')
+        #await asyncio.sleep(3)
+        #await client.edit_message(msg, '40')
+        #try:
+        #    msg = discord.utils.get(Message, id=message.id)
+        #    await delete_message(msg)
 
-        ## LOG
-        log(message.author, message.content, msg)
-
-        ## EXECUTE
-        await client.send_message(message.channel, msg)
-        return
-    ####################
-    # BLOCKEND
-    ####################
-    return
-
+#        return
 
 client.run(bot_id)
