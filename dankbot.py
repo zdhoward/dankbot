@@ -9,6 +9,7 @@ from tinydb import TinyDB, Query
 
 # all your secret codes go into secret.py in the same folder as this
 from secret import bot_id
+from secret import all_roles
 
 ########################################
 ##
