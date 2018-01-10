@@ -130,6 +130,32 @@ async def on_message(message):
         await client.send_message(message.channel, msg)
         return
     ####################
+    # GITHUB
+    ####################
+    if message.content.startswith('!github'):
+        ## ACTION
+        msg = 'Come contribute at: https://github.com/zdhoward/dankbot'
+
+        ## LOG
+        log(message.author, message.content, msg)
+
+        ## EXECUTE
+        await client.send_message(message.channel, msg)
+        return
+    ####################
+    # API
+    ####################
+    if message.content.startswith('!api'):
+        ## ACTION
+        msg = 'API Key Management: https://community.eveonline.com/support/api-key/'
+
+        ## LOG
+        log(message.author, message.content, msg)
+
+        ## EXECUTE
+        await client.send_message(message.channel, msg)
+        return
+    ####################
     # SPOTIFY PLAYLIST
     ####################
     if message.content.startswith('!spotify'):
@@ -231,6 +257,8 @@ async def on_message(message):
         msg += "\n!roll     : d20 d12 d8 d6 d4 d2"
         msg += "\n!skeleton : skeleton stuff"
         msg += "\n!spotify  : our jams"
+        msg += "\n!api      : eve online api"
+        msg += "\n!github   : help contribute"
         msg += "```"
 
         ## LOG
