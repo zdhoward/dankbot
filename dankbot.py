@@ -101,12 +101,14 @@ async def on_member_join(member):
     msg = 'Welcome to the public DOBIS server! {0.mention}'.format(member)
     msg += '\n```'
     msg += '\nPlease start by authorizing your account'
-    msg += '\nType !auth to begin'
+    msg += '\nHop over to the auth channel and type:''
+    msg += '\n!auth'
     msg += '\n```'
     channel = discord.utils.get(client.get_all_channels(), server__name=server.name, name='help')
 
     ## LOG
-    print ('[{0}] {1} -> joined server'.format(datetime.datetime.now().strftime('%Y-%m-%d %H:%M'), member))
+    log (message.author, message.content, 'Joined Server' )
+    #print ('[{0}] {1} -> joined server'.format(datetime.datetime.now().strftime('%Y-%m-%d %H:%M'), member))
 
     ## EXECUTION
     await client.send_message(channel, msg)
