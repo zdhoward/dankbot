@@ -380,7 +380,7 @@ async def on_message(message):
 ## TODO                    #change server name
                     print ('CHANGING NICKNAME to: {0}'.format(name))
                     try:
-                        client.change_nickname(message.author, name)
+                        await client.change_nickname(message.author, name)
                     except discord.HTTPException:
                         print ('HTTPException')
                     except discord.Forbidden:
