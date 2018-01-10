@@ -104,7 +104,7 @@ async def on_member_join(member):
     msg += '\nHop over to the auth channel and type:'
     msg += '\n!auth'
     msg += '\n```'
-    channel = discord.utils.get(client.get_all_channels(), server__name=server.name, name='help')
+    channel = discord.utils.get(client.get_all_channels(), server__name=server.name, name='auth')
 
     ## LOG
     log (message.author, message.content, 'Joined Server' )
