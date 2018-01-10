@@ -73,6 +73,23 @@ def evetime():
     ## NO LOG
     return fmt_time
 
+####################
+# Retrieve user's auth_step
+#   Example:
+#       isAuthed(member)
+#           return 4 (full authed)
+####################
+def isAuthed(member):
+    q = Query()
+    response = db.search(q.discord_id == member.id)
+    # Test for auth_step
+    if len(response) == 1:
+        for r in response:
+            authStep = r['auth_step']
+    else:
+        authStep = 0
+    return authStep
+
 
 ########################################
 ##
