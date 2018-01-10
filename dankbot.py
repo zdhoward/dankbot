@@ -381,9 +381,9 @@ async def on_message(message):
                     print ('CHANGING NICKNAME')
                     try:
                         client.change_nickname(message.author, name)
-                    Exception HTTPException:
+                    except discord.HTTPException:
                         print ('HTTPException')
-                    Exception Forbidden:
+                    except discord.Forbidden:
                         print ('No Permissions')
                     print ('NICK CHANGED')
                     # prompt for next step
