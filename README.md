@@ -1,8 +1,8 @@
 # dankbot
 A Discord bot for EVE Online or whoever needs stuff
 
-Dankbot v0.66
-  Commands:
+## Dankbot v0.66
+#### Commands:
     [-]!auth     : get authed up with eve api + discord nickname
     [x]!roles    : add/removes defined optional roles
     [x]!help     : see commands
