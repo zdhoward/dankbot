@@ -68,7 +68,7 @@ def checkRole(message, role):
 def evetime():
     ## ACTION
     #create time stamp according to EVE's format
-    evetime = datetime.datetime.now() + timedelta(hours=5)
+    evetime = datetime.datetime.now() + timedelta(hours=0)
     fmt_time = evetime.strftime("%H:%M %Y-%m-%d")
     ## NO LOG
     return fmt_time
