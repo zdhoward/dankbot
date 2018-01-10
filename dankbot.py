@@ -377,6 +377,8 @@ async def on_message(message):
                     db.insert({'discord_id': message.author.id, 'name': name, 'api_id': '', 'api_vcode': '', 'auth_step': 1})
                     # delete the public msg
                     client.delete_message(message)
+                    #change server name
+                    client.change_nickname(message.author, name)
                     # prompt for next step
                     msg += '```Step 2```'
                     msg += '```Please enter your in-game name with:'
