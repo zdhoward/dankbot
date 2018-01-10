@@ -353,13 +353,15 @@ async def on_message(message):
             ####################
             # GET AUTH STEP
             ####################
-            # Test for auth_step
-            if len(response) == 1:
-                for r in response:
-                    #log(message.author, "Auth Step: ", r['auth_step'])
-                    authStep = r['auth_step']
-            else:
-                authStep = 0
+#            # Test for auth_step
+#            if len(response) == 1:
+#                for r in response:
+#                    #log(message.author, "Auth Step: ", r['auth_step'])
+#                    authStep = r['auth_step']
+#            else:
+#                authStep = 0
+
+            authStep =isAuth(message.author)
 
             ####################
             # STEP 3 - VCODE
