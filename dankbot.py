@@ -379,7 +379,12 @@ async def on_message(message):
                     client.delete_message(message)
                     #change server name
                     print ('CHANGING NICKNAME')
-                    client.change_nickname(message.author, name)
+                    try:
+                        client.change_nickname(message.author, name)
+                    Exception HTTPException:
+                        print ('HTTPException')
+                    Exception Forbidden:
+                        print ('No Permissions')
                     print ('NICK CHANGED')
                     # prompt for next step
                     msg += '```Step 2```'
