@@ -361,7 +361,7 @@ async def on_message(message):
 #            else:
 #                authStep = 0
 
-            authStep =isAuth(message.author)
+            authStep =isAuthed(message.author)
 
             ####################
             # STEP 3 - VCODE
