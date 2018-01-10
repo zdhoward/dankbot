@@ -52,11 +52,12 @@ def log(member, command, result):
 def checkRole(message, role):
     ## ACTION
     result = False
-    for each in message.author.roles:
-        if each.name == role:
-            result = True
-    ## LOG
-    #log(message.author, message.content, result)
+    if isAuthed(message.author) == 4:
+        for each in message.author.roles:
+            if each.name == role:
+                result = True
+        ## LOG
+        #log(message.author, message.content, result)
     return result
 
 ####################
@@ -95,14 +96,14 @@ def isAuthed(member):
 ##
 ##  MAIN
 ##
+## bot id in secret.py    > bot_id = ""
+## all_roles in secret.py > all_roles = {"EVE", "PUBG"}
+## should help to seperate functions into files
+##
 ########################################
 
 client = discord.Client()
 db = TinyDB('db.json')
-
-# bot id in secret.py    > bot_id = ""
-# all_roles in secret.py > all_roles = {"EVE", "PUBG"}
-# should help to seperate functions into files
 
 @client.event
 async def on_ready():
@@ -124,8 +125,8 @@ async def on_member_join(member):
     channel = discord.utils.get(client.get_all_channels(), server__name=server.name, name='help')
 
     ## LOG
-    log (member, "Joined The Server", 'Sucessfully' )
-    #print ('[{0}] {1} -> joined server'.format(datetime.datetime.now().strftime('%Y-%m-%d %H:%M'), member))
+    #log (member, "Joined The Server", 'Sucessfully' )
+    print ('[{0}] {1} -> joined server'.format(datetime.datetime.now().strftime('%Y-%m-%d %H:%M'), member))
 
     ## EXECUTION
     await client.send_message(channel, msg)
@@ -353,14 +354,6 @@ async def on_message(message):
             ####################
             # GET AUTH STEP
             ####################
-#            # Test for auth_step
-#            if len(response) == 1:
-#                for r in response:
-#                    #log(message.author, "Auth Step: ", r['auth_step'])
-#                    authStep = r['auth_step']
-#            else:
-#                authStep = 0
-
             authStep =isAuthed(message.author)
 
             ####################
@@ -429,7 +422,7 @@ async def on_message(message):
                     try:
                         await client.change_nickname(message.author, name)
                     except discord.HTTPException:
-                        print ('HTTPException')
+                        print ('HTTPException') # keeps throwing this
                     except discord.Forbidden:
                         print ('No Permissions')
                     print ('NICK CHANGED')
