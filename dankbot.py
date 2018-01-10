@@ -411,7 +411,7 @@ async def on_message(message):
                 return
 
         ## LOG
-        log(message.author, message.content, msg)
+        #log(message.author, message.content, msg)
 
         ## EXECUTE
         #await client.send_message(message.channel, msg)
