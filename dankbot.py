@@ -377,7 +377,7 @@ async def on_message(message):
                     db.insert({'discord_id': message.author.id, 'name': name, 'api_id': '', 'api_vcode': '', 'auth_step': 1})
                     # delete the public msg
                     client.delete_message(message)
-                    #change server name
+## TODO                    #change server name
                     print ('CHANGING NICKNAME to: {0}'.format(name))
                     try:
                         client.change_nickname(message.author, name)
@@ -386,6 +386,7 @@ async def on_message(message):
                     except discord.Forbidden:
                         print ('No Permissions')
                     print ('NICK CHANGED')
+## TODO doesn't work :(
                     # prompt for next step
                     msg += '```Step 2```'
                     msg += '```Please enter your in-game name with:'
