@@ -2,6 +2,10 @@ import requests
 import csv
 from pprint import pprint
 
+import re
+
+ITEM_IGNORE_LIST = {' SKIN', ' BLUEPRINT'}
+
 
 def eveToName(itemID):
     #import csv
@@ -27,17 +31,46 @@ def eveToID(itemName):
             itemID = name[0]
     return itemID
 
+def eveToIDs(itemName):
+    items = []
+    #import csv
+    with open('invTypes.csv', 'r') as f:
+        reader = csv.reader(f)
+        names = list(reader)
+    #find Name
+    itemID = 'NOT FOUND'
+    for name in names:
+        if itemName.upper() in name[2].upper():
+            check = True
+            for word in ITEM_IGNORE_LIST:
+                if word.upper() in name[2].upper():
+                    check = False
+            if check:
+                itemID = name[0]
+                items.append(itemID)
+
+
+    if len(items) < 1:
+        items = {}
+
+    return items
+
 def getPrice(itemName):
-    itemID = eveToID(itemName)
+    itemIDs = eveToIDs(itemName)
     msg = ''
     #GET grom ESI Swagger
     response = requests.get('https://esi.tech.ccp.is/latest/markets/prices/')
     for each in response.json():
-#TODO# THIS SHOLD BE A GREP
-        if each['type_id'] == int(itemID):
-            msg += itemName
-            msg += '> avg: '
-            msg += '{:,}'.format(each['average_price'])
-            #msg += ' adj: '
-            #msg += '{:,}'.format(each['adjusted_price'])
+        for item in itemIDs:
+            if each['type_id'] == int(item):
+                msg += item
+                msg += '> '
+                msg += eveToName(item)
+                msg += '> avg: '
+                msg += '{:,}'.format(each['average_price'])
+                msg += '\n'
+                #msg += ' adj: '
+                #msg += '{:,}'.format(each['adjusted_price'])
+                #msg += 'DEBUG:\n'
+                #msg += str(each)
     return msg
