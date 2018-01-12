@@ -38,6 +38,6 @@ def getPrice(itemName):
             msg += itemName
             msg += '> avg: '
             msg += '{:,}'.format(each['average_price'])
-            msg += ' adj: '
-            msg += '{:,}'.format(each['adjusted_price'])
+            #msg += ' adj: '
+            #msg += '{:,}'.format(each['adjusted_price'])
     return msg
