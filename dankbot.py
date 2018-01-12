@@ -411,7 +411,7 @@ async def on_message(message):
                         msg += '\n[ ] {0}'.format(each)
 #REFACTOR ME################
         else:
-            await client.send_message(message.channel, 'UNAUTHORIZED```')
+            await client.send_message(message.channel, '```UNAUTHORIZED```')
             msg = '```type !auth in #auth to find out what to do next'
         msg += '```'
 
