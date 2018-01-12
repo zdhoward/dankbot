@@ -7,6 +7,10 @@ import asyncio
 from datetime import timedelta
 from tinydb import TinyDB, Query
 
+import urllib.request
+import urllib.parse
+import re
+
 # all your secret codes go into secret.py in the same folder as this
 from secret import bot_id
 #from secret import all_roles
@@ -62,6 +66,29 @@ def checkRole(message, role):
     ## LOG
     #log(message.author, message.content, result)
     return result
+
+####################
+# Search youtube for a video
+#   Example:
+#       youtube("Funny skeleton Video")
+#           return "https://www.youtube.com/watch?v=vOGhAV-84iI"
+####################
+def youtube(q,n=5):
+    ## ACTION
+    # format query string
+    query_string = urllib.parse.urlencode({"search_query" : q})
+    # search youtube
+    html_content = urllib.request.urlopen("http://www.youtube.com/results?" + query_string)
+    # parse results
+    search_results = re.findall(r'href=\"\/watch\?v=(.{11})', html_content.read().decode())
+    # make random based on time
+    random.seed(ts())
+    seed = '{0}-{1}'.format(q, random.randint(1, 1000000000))
+    random.seed(seed)
+    rng = random.randint(1, n)
+    res = search_results[rng]
+    response = "{0}) http://www.youtube.com/watch?v={1}".format(rng, res)
+    return response
 
 ####################
 # Convert Local time to EVE Server Time manually
@@ -195,14 +222,36 @@ async def on_message(message):
     if message.content.startswith('!skeleton'):
         ## ACTION
         #find random skeleton vids or pics
-        msg = 'Skeleton Video #666'
-        msg += '\nhttps://www.youtube.com/watch?v=Co6d3h-NpS8'
+        #msg = 'Skeleton Video #666'
+        #msg += '\nhttps://www.youtube.com/watch?v=Co6d3h-NpS8'
+
+        ## ACTION
+        #find random skeleton vids or pics
+        response = youtube('funny skeleton')
 
         ## LOG
         log(message.author, message.content, msg)
 
         ## EXECUTE
         await client.send_message(message.channel, msg)
+        return
+    ####################
+    # YOUTUBE
+    ####################
+    if message.content.startswith('!youtube'):
+        ## ACTION
+        #find random skeleton vids or pics
+        query = message.content.replace('!youtube ', '')
+        if query != '!youtube':
+            response = youtube(query)
+        else:
+            response = '!youtube [search_query]'
+
+        ## LOG
+        log(message.author, message.content, response)
+
+        ## EXECUTE
+        await client.send_message(message.channel, response)
         return
     ####################
     # ROLL
@@ -280,6 +329,7 @@ async def on_message(message):
         msg += "\n!spotify  : our jams"
         msg += "\n!api      : eve online api"
         msg += "\n!github   : help contribute"
+        msg += "\n!youtube  : search vids"
         msg += "```"
 
         ## LOG
