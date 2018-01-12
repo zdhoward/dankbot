@@ -177,6 +177,24 @@ async def on_message(message):
         ## EXECUTE
         await client.send_message(message.channel, msg)
         return
+#    ####################
+#    # CHANGE NICKNAME  # DEBUGGING
+#    ####################
+#    if message.content.startswith('!nick'):
+#        ## ACTION
+#        name = message.content.replace('!nick ', '')
+#        if name != '!nick':
+#            await client.change_nickname(message.author, name)
+#            msg = 'Nickname changed to {0}'.format(name)
+#        else:
+#            msg = 'Nickname Change FAILED'
+#
+#        ## LOG
+#        log(message.author, message.content, msg)
+#
+#        ## EXECUTE
+#        await client.send_message(message.channel, msg)
+#        return
     ####################
     # GITHUB
     ####################
@@ -216,25 +234,25 @@ async def on_message(message):
         ## EXECUTE
         await client.send_message(message.channel, msg)
         return
-    ####################
-    # RANDOM SKELETON
-    ####################
-    if message.content.startswith('!skeleton'):
-        ## ACTION
-        #find random skeleton vids or pics
-        #msg = 'Skeleton Video #666'
-        #msg += '\nhttps://www.youtube.com/watch?v=Co6d3h-NpS8'
-
-        ## ACTION
-        #find random skeleton vids or pics
-        response = youtube('funny skeleton')
-
-        ## LOG
-        log(message.author, message.content, msg)
-
-        ## EXECUTE
-        await client.send_message(message.channel, msg)
-        return
+#    ####################
+#    # RANDOM SKELETON
+#    ####################
+#    if message.content.startswith('!skeleton'):
+#        ## ACTION
+#        #find random skeleton vids or pics
+#        #msg = 'Skeleton Video #666'
+#        #msg += '\nhttps://www.youtube.com/watch?v=Co6d3h-NpS8'
+#
+#        ## ACTION
+#        #find random skeleton vids or pics
+#        response = youtube('funny skeleton')
+#
+#        ## LOG
+#        log(message.author, message.content, msg)
+#
+#        ## EXECUTE
+#        await client.send_message(message.channel, msg)
+#        return
     ####################
     # YOUTUBE
     ####################
@@ -325,7 +343,7 @@ async def on_message(message):
         msg += "\n!hello    : hello dankbot"
         msg += "\n!evetime  : UTC time"
         msg += "\n!roll     : d20 d12 d8 d6 d4 d2"
-        msg += "\n!skeleton : skeleton stuff"
+#        msg += "\n!skeleton : skeleton stuff"
         msg += "\n!spotify  : our jams"
         msg += "\n!api      : eve online api"
         msg += "\n!github   : help contribute"
@@ -343,39 +361,58 @@ async def on_message(message):
     ####################
     if message.content.startswith('!roles'):
         ## ACTION
+        q = Query()
+        response = db.search(q.discord_id == message.author.id)
+
+        ####################
+        # GET AUTH STEP
+        ####################
+        #authStep =isAuthed(message.author)
+        q = Query()
+        response = db.search(q.discord_id == message.author.id)
         msg = '```'
-        role = message.content.replace('!roles ', '')
-        if role == "!roles":
+        # Test for auth_step
+        if len(response) == 1:
+            for r in response:
+                authStep = r['auth_step']
+        else:
+            authStep = 0
+        if authStep == 4:
+            role = message.content.replace('!roles ', '')
+            if role == "!roles":
 #REFACTOR ME# Display Roles
-            for each in all_roles:
-                if checkRole(message, each):
-                    msg += '\n[x] {0}'.format(each)
+                for each in all_roles:
+                    if checkRole(message, each):
+                        msg += '\n[x] {0}'.format(each)
+                    else:
+                        msg += '\n[ ] {0}'.format(each)
+#REFACTOR ME################
+            else:
+            # Toggle Roles
+            # toggleRole(message.author, role)
+                #for each in roles:
+                handle = discord.utils.get(message.server.roles, name=role.upper())
+                cr = checkRole(message, role.upper())
+                if cr:
+                    #remove role
+                    await client.remove_roles(message.author, handle)
+                    await client.send_message(message.channel, "```Removing Role: {0}```".format(handle))
+                    log(message.author, message.content, 'remove {0} role'.format(handle))
                 else:
-                    msg += '\n[ ] {0}'.format(each)
+                    #add role
+                    await client.add_roles(message.author, handle)
+                    await client.send_message(message.channel, "```Adding Role: {0}```".format(handle))
+                    log(message.author, message.content, 'add {0} role'.format(handle))
+#REFACTOR ME# Display Roles
+                for each in all_roles:
+                    if checkRole(message, each):
+                        msg += '\n[x] {0}'.format(each)
+                    else:
+                        msg += '\n[ ] {0}'.format(each)
 #REFACTOR ME################
         else:
-        # Toggle Roles
-        # toggleRole(message.author, role)
-            #for each in roles:
-            handle = discord.utils.get(message.server.roles, name=role.upper())
-            cr = checkRole(message, role.upper())
-            if cr:
-                #remove role
-                await client.remove_roles(message.author, handle)
-                await client.send_message(message.channel, "```Removing Role: {0}```".format(handle))
-                log(message.author, message.content, 'remove {0} role'.format(handle))
-            else:
-                #add role
-                await client.add_roles(message.author, handle)
-                await client.send_message(message.channel, "```Adding Role: {0}```".format(handle))
-                log(message.author, message.content, 'add {0} role'.format(handle))
-#REFACTOR ME# Display Roles
-            for each in all_roles:
-                if checkRole(message, each):
-                    msg += '\n[x] {0}'.format(each)
-                else:
-                    msg += '\n[ ] {0}'.format(each)
-#REFACTOR ME################
+            await client.send_message(message.channel, 'UNAUTHORIZED```')
+            msg = '```type !auth in #auth to find out what to do next'
         msg += '```'
 
         ## LOG
@@ -394,6 +431,43 @@ async def on_message(message):
             q = Query()
             response = db.search(q.discord_id == message.author.id)
             msg = ''
+
+            ####################
+            # GET AUTH STEP
+            ####################
+            #authStep =isAuthed(message.author)
+            q = Query()
+            response = db.search(q.discord_id == message.author.id)
+            # Test for auth_step
+            if len(response) == 1:
+                for r in response:
+                    authStep = r['auth_step']
+            else:
+                authStep = 0
+
+            ####################
+            # START AUTH
+            ####################
+            if command == ('!auth'):
+                if authStep == 3:
+                    msg += '```Already Authorized!```'
+                    msg += '```If you need to reset this process:'
+                    msg += '\n!auth reset```'
+                elif authStep == 2:
+                    msg += '```Your next step:```'
+                    msg += '```Please enter your api vcode with:'
+                    msg += '\n!auth vcode [vcode]```'
+                elif authStep == 1:
+                    msg += '```Your next step:```'
+                    msg += '```Please enter your in-game id with:'
+                    msg += '\n!auth id [id]```'
+                else:
+                    msg += '```Step 1```'
+                    msg += '```Please enter your in-game name with:'
+                    msg += '\n!auth name [name]```'
+                await client.send_message(message.channel, msg)
+                return
+
             ####################
             # AUTH RESET
             ####################
@@ -403,19 +477,6 @@ async def on_message(message):
                 # must execute and exit early
                 await client.send_message(message.channel, msg)
                 return
-
-            ####################
-            # GET AUTH STEP
-            ####################
-            #authStep =isAuthed(message.author)
-            q = Query()
-            response = db.search(q.discord_id == member.id)
-            # Test for auth_step
-            if len(response) == 1:
-                for r in response:
-                    authStep = r['auth_step']
-            else:
-                authStep = 0
 
             ####################
             # STEP 3 - VCODE
@@ -499,29 +560,6 @@ async def on_message(message):
 
                 await client.send_message(message.channel, msg)
                 return
-            ####################
-            # START AUTH
-            ####################
-            if command.startswith('!auth'):
-                if authStep == 3:
-                    msg += '```Already Authorized!```'
-                    msg += '```If you need to reset this process:'
-                    msg += '\n!auth reset```'
-                elif authStep == 2:
-                    msg += '```Your next step:```'
-                    msg += '```Please enter your api vcode with:'
-                    msg += '\n!auth vcode [vcode]```'
-                elif authStep == 1:
-                    msg += '```Your next step:```'
-                    msg += '```Please enter your in-game id with:'
-                    msg += '\n!auth id [id]```'
-                else:
-                    msg += '```Step 1```'
-                    msg += '```Please enter your in-game name with:'
-                    msg += '\n!auth name [name]```'
-                await client.send_message(message.channel, msg)
-                return
-
         ## LOG
         #log(message.author, message.content, msg)
 
