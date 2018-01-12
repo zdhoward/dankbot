@@ -377,7 +377,7 @@ async def on_message(message):
                 authStep = r['auth_step']
         else:
             authStep = 0
-        if authStep == 4:
+        if authStep == 3:
             role = message.content.replace('!roles ', '')
             if role == "!roles":
 #REFACTOR ME# Display Roles
