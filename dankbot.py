@@ -365,6 +365,7 @@ async def on_message(message):
         msg += "\n!hello    : hello dankbot"
         msg += "\n!evetime  : UTC time"
         msg += "\n!roll     : d20 d12 d8 d6 d4 d2"
+        msg += "\n!price    : eve prices"
 #        msg += "\n!skeleton : skeleton stuff"
         msg += "\n!spotify  : our jams"
         msg += "\n!api      : eve online api"
