@@ -11,6 +11,8 @@ import urllib.request
 import urllib.parse
 import re
 
+from eve import getPrice
+
 # all your secret codes go into secret.py in the same folder as this
 from secret import bot_id
 #from secret import all_roles
@@ -209,6 +211,26 @@ async def on_message(message):
         await client.send_message(message.channel, msg)
         return
     ####################
+    # EVE PRICES
+    ####################
+    if message.content.startswith('!price'):
+        ## ACTION
+        item = message.content.replace('!price ', '')
+
+        if item != '!price':
+            msg = '```'
+            msg += getPrice(item)
+            msg += '```'
+        else:
+            msg = '```!price [item name]```'
+
+        ## LOG
+        log(message.author, message.content, msg)
+
+        ## EXECUTE
+        await client.send_message(message.channel, msg)
+        return
+    ####################
     # API
     ####################
     if message.content.startswith('!api'):
@@ -287,7 +309,7 @@ async def on_message(message):
         roll = (random.randint(1,die) - 1)
 
         msg = '```'
-        msg += '\n{0}'.format(options[roll])
+        msg += '\n{:,}'.format(options[roll])
         msg +='```'
 
         ## LOG
