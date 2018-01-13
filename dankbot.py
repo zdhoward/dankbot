@@ -107,6 +107,21 @@ def evetime():
     return fmt_time
 
 ####################
+# Convert Local time to EVE Server Time manually
+#   Example:
+#       timer(message)
+#           return "23:00 2018-01-08"
+####################
+#async def timer(message, response, length):
+#    await client.wait_until_ready()
+#    fmt = '```{0}```'.format(response)
+#    while not client.is_closed:
+#        await asyncio.sleep(length)
+#        await client.send_message(message.channel, response)
+#         # task runs every 60 seconds
+
+
+####################
 # Retrieve user's auth_step
 #   Example:
 #       isAuthed(member)
@@ -230,6 +245,24 @@ async def on_message(message):
         ## EXECUTE
         await client.send_message(message.channel, msg)
         return
+#    ####################
+#    # TIMER
+#    ####################
+#    if message.content.startswith('!timer'):
+#        ## ACTION
+#        response = message.content.replace('!timer ', '')
+#
+#        if response != '!timer':
+#            await timer(message, response, 10)
+#        else:
+#            msg = '```!timer [timer name]```'
+#
+#        ## LOG
+#        log(message.author, message.content, response)
+#
+#        ## EXECUTE
+#        #await client.send_message(message.channel, response)
+#        return
     ####################
     # API
     ####################
@@ -309,7 +342,7 @@ async def on_message(message):
         roll = (random.randint(1,die) - 1)
 
         msg = '```'
-        msg += '\n{:,}'.format(options[roll])
+        msg += '\n{0}'.format(options[roll])
         msg +='```'
 
         ## LOG
