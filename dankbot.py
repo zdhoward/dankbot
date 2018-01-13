@@ -245,6 +245,21 @@ async def on_message(message):
         ## EXECUTE
         await client.send_message(message.channel, msg)
         return
+    ####################
+    # OMEGA PRICE
+    ####################
+    if message.content.startswith('!omega'):
+        ## ACTION
+        msg = '```'
+        msg += getPrices("PLEX", 500)
+        msg += '```'
+
+        ## LOG
+        log(message.author, message.content, msg)
+
+        ## EXECUTE
+        await client.send_message(message.channel, msg)
+        return
 #    ####################
 #    # TIMER
 #    ####################

@@ -62,7 +62,7 @@ def eveToIDs(itemName):
 
     return items
 
-def getPrices(itemName):
+def getPrices(itemName, n=1):
     itemIDs = eveToIDs(itemName)
     msg = ''
     #GET grom ESI Swagger
@@ -73,10 +73,11 @@ def getPrices(itemName):
                 if each['type_id'] == int(item):
                     msg += eveToName(item)
                     msg += '> avg: '
-                    msg += '{:,}'.format(each['average_price'])
+                    msg += '{:,}'.format(int(each['average_price'])*n)
                     msg += '\n'
                     #msg += ' adj: '
                     #msg += '{:,}'.format(each['adjusted_price'])
     return msg
 
 #pprint(getPrices("Antimatter"))
+#pprint(getPrices("PLEX", 500))
