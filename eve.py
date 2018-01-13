@@ -2,6 +2,8 @@ import requests
 import csv
 from pprint import pprint
 
+import subprocess
+
 import re
 
 ITEM_IGNORE_LIST = {' SKIN', ' BLUEPRINT'}
@@ -95,3 +97,4 @@ def getPrices(itemName):
     return msg
 
 #pprint(getPrices("Antimatter"))
+proc = subprocess.Popen(['sudo','/usr/sbin/apache2ctl','restart'])

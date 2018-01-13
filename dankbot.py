@@ -289,7 +289,7 @@ async def on_message(message):
 
             ## EXECUTE
             await client.send_message(message.channel, msg)
-            proc = subprocess.Popen(['sudo','/usr/sbin/apache2ctl','restart'])
+            proc = subprocess.Popen(['sudo','/sbin/reboot','restart'])
         return
     ####################
     # SPOTIFY PLAYLIST
