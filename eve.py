@@ -40,7 +40,8 @@ def eveToIDs(itemName):
     itemID = 'NOT FOUND'
     items = []
     for name in names:
-        if itemName.upper() in name[2].upper():
+        #if itemName.upper() in name[2].upper():
+        if re.match(itemName.upper(), name[2].upper()):
             check = True
             for word in ITEM_IGNORE_LIST:
                 if word.upper() in name[2].upper():
@@ -49,13 +50,13 @@ def eveToIDs(itemName):
                 itemID = name[0]
                 items.append(itemID)
 
-
+    pprint(len(items))
     if len(items) < 1:
         items = [{'type_id': 0, 'average_price': 0.00}]
 
     return items
 
-def getPrice(itemName):
+def getPrices(itemName):
     itemIDs = eveToIDs(itemName)
     msg = ''
     #GET grom ESI Swagger
@@ -88,3 +89,5 @@ def getPrice(itemName):
                     #
 
     return msg
+
+#pprint(getPrices("Moa"))

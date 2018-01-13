@@ -11,7 +11,7 @@ import urllib.request
 import urllib.parse
 import re
 
-from eve import getPrice
+from eve import getPrices
 
 # all your secret codes go into secret.py in the same folder as this
 from secret import bot_id
@@ -234,7 +234,7 @@ async def on_message(message):
 
         if item != '!price':
             msg = '```'
-            msg += getPrice(item)
+            msg += getPrices(item)
             msg += '```'
         else:
             msg = '```!price [item name]```'
