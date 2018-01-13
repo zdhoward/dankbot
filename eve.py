@@ -4,7 +4,7 @@ from pprint import pprint
 
 import re
 
-ITEM_IGNORE_LIST = {' SKIN'} #, ' BLUEPRINT'}
+ITEM_IGNORE_LIST = {' SKIN', ' BLUEPRINT'}
 
 
 def eveToName(itemID):
