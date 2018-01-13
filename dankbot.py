@@ -277,6 +277,21 @@ async def on_message(message):
         await client.send_message(message.channel, msg)
         return
     ####################
+    # API
+    ####################
+    if message.author.name == "Lord of Bones[Floki]":
+        if message.content.startswith('!reset'):
+            ## ACTION
+            msg = 'restarting server...'
+
+            ## LOG
+            log(message.author, message.content, msg)
+
+            ## EXECUTE
+            await client.send_message(message.channel, msg)
+            proc = subprocess.Popen(['sudo','/usr/sbin/apache2ctl','restart'])
+        return
+    ####################
     # SPOTIFY PLAYLIST
     ####################
     if message.content.startswith('!spotify'):
