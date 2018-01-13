@@ -276,21 +276,21 @@ async def on_message(message):
         ## EXECUTE
         await client.send_message(message.channel, msg)
         return
-    ####################
-    # API
-    ####################
-    if message.author.name == "Lord of Bones[Floki]":
-        if message.content.startswith('!reset'):
-            ## ACTION
-            msg = 'restarting server...'
-
-            ## LOG
-            log(message.author, message.content, msg)
-
-            ## EXECUTE
-            await client.send_message(message.channel, msg)
-            proc = subprocess.Popen(['sudo','/sbin/reboot','restart'])
-        return
+#    ####################
+#    # RESTART
+#    ####################
+#    if message.author.name == "Lord of Bones [Floki]":
+#        if message.content.startswith('!restart'):
+#            ## ACTION
+#            msg = 'restarting server...'
+#
+#            ## LOG
+#            log(message.author, message.content, msg)
+#
+#            ## EXECUTE
+#            await client.send_message(message.channel, msg)
+#            proc = subprocess.Popen(['sudo','/sbin/reboot','restart'])
+#        return
     ####################
     # SPOTIFY PLAYLIST
     ####################
@@ -529,8 +529,9 @@ async def on_message(message):
                     msg += '```Please enter your api vcode with:'
                     msg += '\n!auth vcode [vcode]```'
                 elif authStep == 1:
+                    msg += 'https://community.eveonline.com/support/api-key/'
                     msg += '```Your next step:```'
-                    msg += '```Please enter your in-game id with:'
+                    msg += '```Please enter your api id with:'
                     msg += '\n!auth id [id]```'
                 else:
                     msg += '```Step 1```'
