@@ -97,4 +97,4 @@ def getPrices(itemName):
     return msg
 
 #pprint(getPrices("Antimatter"))
-proc = subprocess.Popen(['sudo','/usr/sbin/apache2ctl','restart'])
+#proc = subprocess.Popen(['sudo','/usr/sbin/apache2ctl','restart'])
