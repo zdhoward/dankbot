@@ -434,6 +434,7 @@ async def on_message(message):
         msg += "\n!api      : eve online api"
         msg += "\n!github   : help contribute"
         msg += "\n!youtube  : search vids"
+        msg += "\n!omega    : eve omega cost"
         msg += "```"
 
         ## LOG
