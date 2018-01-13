@@ -41,6 +41,10 @@ def eveToIDs(itemName):
     items = []
     for name in names:
         #if itemName.upper() in name[2].upper():
+        # '.*'
+#        regex = re.compile(r"\(?:^|\W)antimatter(?:$|\W)\b", re.I)
+#        items = regex.findall(name[2])
+
         if re.match(itemName.upper(), name[2].upper()):
             check = True
             for word in ITEM_IGNORE_LIST:
@@ -65,8 +69,8 @@ def getPrices(itemName):
         for item in itemIDs:
             if (each['type_id'] != None) & (each['type_id'] != 0) & (each['type_id'] != '0'):
                 if each['type_id'] == int(item):
-                    msg += item
-                    msg += '> '
+                    #msg += item
+                    #msg += '> '
                     msg += eveToName(item)
                     msg += '> avg: '
                     msg += '{:,}'.format(each['average_price'])
@@ -90,4 +94,4 @@ def getPrices(itemName):
 
     return msg
 
-#pprint(getPrices("Moa"))
+#pprint(getPrices("Antimatter"))
