@@ -607,7 +607,7 @@ async def on_message(message):
 ## TODO doesn't work :(
                     # prompt for next step
                     msg += '```Step 2```'
-                    msg += '```Please enter your in-game name with:'
+                    msg += '```Please enter your api id with:'
                     msg += '\n!auth id [id]```'
                 else:
                     msg += '```Step 1: FAILED```'
