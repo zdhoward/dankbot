@@ -226,6 +226,19 @@ async def on_message(message):
         await client.send_message(message.channel, msg)
         return
     ####################
+    # STEAM
+    ####################
+    if message.content.startswith('!steam'):
+        ## ACTION
+        msg = 'Our Steam Group: http://steamcommunity.com/groups/dobisinc'
+
+        ## LOG
+        log(message.author, message.content, msg)
+
+        ## EXECUTE
+        await client.send_message(message.channel, msg)
+        return
+    ####################
     # EVE PRICES
     ####################
     if message.content.startswith('!price'):
@@ -319,25 +332,6 @@ async def on_message(message):
         ## EXECUTE
         await client.send_message(message.channel, msg)
         return
-#    ####################
-#    # RANDOM SKELETON
-#    ####################
-#    if message.content.startswith('!skeleton'):
-#        ## ACTION
-#        #find random skeleton vids or pics
-#        #msg = 'Skeleton Video #666'
-#        #msg += '\nhttps://www.youtube.com/watch?v=Co6d3h-NpS8'
-#
-#        ## ACTION
-#        #find random skeleton vids or pics
-#        response = youtube('funny skeleton')
-#
-#        ## LOG
-#        log(message.author, message.content, msg)
-#
-#        ## EXECUTE
-#        await client.send_message(message.channel, msg)
-#        return
     ####################
     # YOUTUBE
     ####################
@@ -429,7 +423,6 @@ async def on_message(message):
         msg += "\n!evetime  : UTC time"
         msg += "\n!roll     : d20 d12 d8 d6 d4 d2"
         msg += "\n!price    : eve prices"
-#        msg += "\n!skeleton : skeleton stuff"
         msg += "\n!spotify  : our jams"
         msg += "\n!api      : eve online api"
         msg += "\n!github   : help contribute"

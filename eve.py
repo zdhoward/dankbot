@@ -46,8 +46,8 @@ def eveToIDs(itemName):
         # '.*'
 #        regex = re.compile(r"\(?:^|\W)antimatter(?:$|\W)\b", re.I)
 #        items = regex.findall(name[2])
-
-        if re.match(itemName.upper(), name[2].upper()):
+        regex = r"\b(?=\w)" + re.escape(itemName) + r"\b(?!\w)"
+        if re.match(regex, name[2].upper(), re.IGNORECASE):
             check = True
             for word in ITEM_IGNORE_LIST:
                 if word.upper() in name[2].upper():
@@ -73,11 +73,12 @@ def getPrices(itemName, n=1):
                 if each['type_id'] == int(item):
                     msg += eveToName(item)
                     msg += '> avg: '
-                    msg += '{:,}'.format(int(each['average_price'])*n)
+                    msg += '{:,}'.format(float(each['average_price'])*n)
                     msg += '\n'
                     #msg += ' adj: '
                     #msg += '{:,}'.format(each['adjusted_price'])
     return msg
-
 #pprint(getPrices("Antimatter"))
 #pprint(getPrices("PLEX", 500))
+
+pprint(getPrices("Antimatter"))
