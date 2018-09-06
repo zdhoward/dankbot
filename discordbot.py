@@ -101,7 +101,7 @@ def youtube(q,n=5):
 def evetime():
     ## ACTION
     #create time stamp according to EVE's format
-    evetime = datetime.datetime.now() + timedelta(hours=0)
+    evetime = datetime.datetime.utcnow()
     fmt_time = evetime.strftime("%H:%M %Y-%m-%d")
     ## NO LOG
     return fmt_time
